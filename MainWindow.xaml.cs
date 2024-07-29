@@ -354,7 +354,7 @@ namespace WpfApp1
                         }
                         else if (recpage.FileType == FileType.ImageFile)
                         {
-                            System.Drawing.Image tmpimg = System.Drawing.Image.FromFile(recpage.FileLocation);
+                            System.Drawing.Image tmpimg = System.Drawing.Image.FromFile(recpage.FileLocation); 
                             tmpimg.Save(imgfile, _conn.EncoderInfo, _conn.ImgEncParams);
                             totalSuccess++;
                         }
