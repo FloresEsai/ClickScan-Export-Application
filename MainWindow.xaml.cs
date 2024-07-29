@@ -41,9 +41,6 @@ namespace WpfApp1
             PopulateDrawersComboBox();
         } // MainWindow
 
-
-
-
         /// <summary>
         /// Closes Console when program is closed out
         /// </summary>
@@ -54,9 +51,6 @@ namespace WpfApp1
             // Free the console when the application is closed
             FreeConsole();
         } // OnClosed
-
-
-
 
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
@@ -72,9 +66,6 @@ namespace WpfApp1
             }
         } // Populate Datasources ComboBox
 
-
-
-
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
         /// </summary>
@@ -88,9 +79,6 @@ namespace WpfApp1
                 DrawersComboBox.Items.Add(drawer);
             }
         } // Populate Drawers ComboBox
-
-
-
 
         /// <summary>
         /// Attempts to connect to the database using the provided data source.
@@ -109,9 +97,6 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // Try Connect To Database
-
-
-
 
         /// <summary>
         /// Event handler for the datasources combo box selection change.
@@ -151,9 +136,6 @@ namespace WpfApp1
             }
         } // Set Active Data Source
 
-
-
-
         /// <summary>
         /// Event handler for the drawers combo box selection change.
         /// Sets the active drawer in the database connection.
@@ -183,9 +165,6 @@ namespace WpfApp1
             }
         } // Set Active Drawer
 
-
-
-
         /// <summary>
         /// Event handler for the "Browse" button click.
         /// Prompts the user to select an export path.
@@ -205,7 +184,13 @@ namespace WpfApp1
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     // Get the selected folder
-                    _maindest = Path.Combine(dialog.SelectedPath, "Images");
+                    _maindest = dialog.SelectedPath;
+
+                    // Ensure _maindest ends with a directory separator
+                    if (!_maindest.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                    {
+                        _maindest += Path.DirectorySeparatorChar;
+                    }
 
                     // Display the current selected path to the user
                     FilePathTextBox.Text = _maindest;
@@ -213,9 +198,6 @@ namespace WpfApp1
                 }
             }
         } // Set Export Destination
-
-
-
 
         /// <summary>
         /// Event handler for the "Export" button click
@@ -239,11 +221,11 @@ namespace WpfApp1
                 totalRecords = records.Count;
                 Console.WriteLine("Found " + records.Count + " records");
 
-                EnsureDirectoryExists(_maindest);
+                EnsureDirectoryExists(Path.Combine(_maindest, "Images"));
 
                 int pageseq = 1;
 
-                using (StreamWriter writer = new(_maindest + "import.txt"))
+                using (StreamWriter writer = new(Path.Combine(_maindest, "import.txt")))
                 {
                     for (int pos = 0; pos < records.Count; pos++)
                     {
@@ -256,7 +238,7 @@ namespace WpfApp1
                         {
                             totalFailed++;
                             totalRecords--;
-                            LogError("Error Retrieving Images [" + record.FolderID + "]", _maindest + "ErrorLog.txt");
+                            LogError("Error Retrieving Images [" + record.FolderID + "]", Path.Combine(_maindest, "ErrorLog.txt"));
                             continue;
                         }
 
@@ -272,9 +254,6 @@ namespace WpfApp1
 
             System.Windows.MessageBox.Show("Extraction Finished");
         } // Export
-
-
-
 
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
@@ -299,9 +278,6 @@ namespace WpfApp1
             });
         } // ReportProgress
 
-
-
-
         /// Ensures that a directory exists, creates it if it does not.
         /// Also checks if the directory creation was successful.
         /// </summary>
@@ -324,9 +300,6 @@ namespace WpfApp1
             return Directory.Exists(path);
         } // EnsureDirectoryExists
 
-
-
-
         /// <summary>
         /// Validates if the pages in a record are valid.
         /// </summary>
@@ -335,9 +308,6 @@ namespace WpfApp1
         {
             return record.Pages != null && record.Pages.Count > 0;
         } // IsValidPages
-
-
-
 
         /// <summary>
         /// Logs an error message to the specified log file.
@@ -353,9 +323,6 @@ namespace WpfApp1
             }
         } // LogError
 
-
-
-
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
         /// </summary>
@@ -370,7 +337,7 @@ namespace WpfApp1
             {
                 foreach (CMImaging.Page recpage in record.Pages)
                 {
-                    string imgfile = _maindest + pageseq.ToString("0000") + ".tif";
+                    string imgfile = Path.Combine(_maindest, "Images", pageseq.ToString("0000") + ".tif");
 
                     if (recpage.FileType == FileType.ImageFile)
                     {
@@ -388,7 +355,7 @@ namespace WpfApp1
                         {
                             Console.WriteLine($"A File has failed to be exported. Description(ID:ImageType:FileType:Location): {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
                             totalFailed++;
-                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", _maindest + "ErrorLog.txt");
+                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", Path.Combine(_maindest, "ErrorLog.txt"));
                         }
                     }
                     else
@@ -399,14 +366,14 @@ namespace WpfApp1
                         }
                         else if (recpage.FileType == FileType.ImageFile)
                         {
-                            System.Drawing.Image tmpimg = System.Drawing.Image.FromFile(recpage.FileLocation); 
+                            System.Drawing.Image tmpimg = System.Drawing.Image.FromFile(recpage.FileLocation);
                             tmpimg.Save(imgfile, _conn.EncoderInfo, _conn.ImgEncParams);
                             totalSuccess++;
                         }
                         else
                         {
                             Console.WriteLine($"Failed Export. Not of type 'ImageFile': {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
-                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", _maindest + "ErrorLog.txt");
+                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", Path.Combine(_maindest, "ErrorLog.txt"));
                         }
                     }
 
@@ -419,8 +386,6 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPages : {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // ProcessPages
-
-
 
 
         /// <summary>
@@ -453,9 +418,6 @@ namespace WpfApp1
             }
         } // ProcessPdfPage
 
-
-
-
         /// <summary>
         /// Logs the results of the export process.
         /// </summary>
@@ -468,7 +430,6 @@ namespace WpfApp1
             Console.WriteLine("NOTICE: Export file will be overwritten if subsequent exports are made in the same directory.");
             try
             {
-                // Ensure the file 'export.log' is created in the _maindest location
                 string logFilePath = Path.Combine(_maindest, "export.log");
                 if (!File.Exists(logFilePath))
                 {
