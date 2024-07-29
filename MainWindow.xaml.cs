@@ -11,7 +11,7 @@ namespace WpfApp1
         private Connection? _conn; // Connection object for database interactions //(FOUND AUTOMATICALLY AND FOUND IN CONFIG FILE)//
         public string? _datasource = "PDS ClickScan"; // The data source for the database connection
         public string? _dname; // The name of the drawer in the database
-        public string? _maindest; // The main destination for export files
+        public string? _maindest = @""; // The main destination for export files
 
         // Import the necessary WinAPI functions
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -44,7 +44,6 @@ namespace WpfApp1
         /// <summary>
         /// Closes Console when program is closed out
         /// </summary>
-        /// <param name="e"></param>
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -276,8 +275,7 @@ namespace WpfApp1
         /// Ensures that a directory exists, creates it if it does not.
         /// Also checks if the directory creation was successful.
         /// </summary>
-        /// <param name="path">The path of the directory to check or create.</param>
-        /// <returns>True if the directory exists or was created successfully, false otherwise.</returns>
+        /// <param name="path"> The path of the directory to check or create.</param>
         private static bool EnsureDirectoryExists(string path)
         {
             if (!Directory.Exists(path))
@@ -300,7 +298,6 @@ namespace WpfApp1
         /// Validates if the pages in a record are valid.
         /// </summary>
         /// <param name="record">The record to validate.</param>
-        /// <returns>True if valid, otherwise false.</returns>
         private static bool IsValidPages(FolderRecord record)
         {
             return record.Pages != null && record.Pages.Count > 0;
