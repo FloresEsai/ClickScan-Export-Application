@@ -41,6 +41,8 @@ namespace WpfApp1
             PopulateDrawersComboBox();
         } // MainWindow
 
+
+
         /// <summary>
         /// Closes Console when program is closed out
         /// </summary>
@@ -51,6 +53,8 @@ namespace WpfApp1
             // Free the console when the application is closed
             FreeConsole();
         } // OnClosed
+
+
 
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
@@ -66,6 +70,8 @@ namespace WpfApp1
             }
         } // Populate Datasources ComboBox
 
+
+
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
         /// </summary>
@@ -79,6 +85,8 @@ namespace WpfApp1
                 DrawersComboBox.Items.Add(drawer);
             }
         } // Populate Drawers ComboBox
+
+
 
         /// <summary>
         /// Attempts to connect to the database using the provided data source.
@@ -97,6 +105,8 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // Try Connect To Database
+
+
 
         /// <summary>
         /// Event handler for the datasources combo box selection change.
@@ -136,6 +146,8 @@ namespace WpfApp1
             }
         } // Set Active Data Source
 
+
+
         /// <summary>
         /// Event handler for the drawers combo box selection change.
         /// Sets the active drawer in the database connection.
@@ -165,6 +177,8 @@ namespace WpfApp1
             }
         } // Set Active Drawer
 
+
+
         /// <summary>
         /// Event handler for the "Browse" button click.
         /// Prompts the user to select an export path.
@@ -192,6 +206,8 @@ namespace WpfApp1
                 }
             }
         } // Set Export Destination
+
+
 
         /// <summary>
         /// Event handler for the "Export" button click
@@ -249,6 +265,8 @@ namespace WpfApp1
             System.Windows.MessageBox.Show("Extraction Finished");
         } // Export
 
+
+
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
         /// </summary>
@@ -272,6 +290,8 @@ namespace WpfApp1
             });
         } // ReportProgress
 
+
+
         /// Ensures that a directory exists, creates it if it does not.
         /// Also checks if the directory creation was successful.
         /// </summary>
@@ -294,6 +314,8 @@ namespace WpfApp1
             return Directory.Exists(path);
         } // EnsureDirectoryExists
 
+
+
         /// <summary>
         /// Validates if the pages in a record are valid.
         /// </summary>
@@ -302,6 +324,8 @@ namespace WpfApp1
         {
             return record.Pages != null && record.Pages.Count > 0;
         } // IsValidPages
+
+
 
         /// <summary>
         /// Logs an error message to the specified log file.
@@ -316,6 +340,8 @@ namespace WpfApp1
                 logger.WriteLine("");
             }
         } // LogError
+
+
 
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
@@ -381,6 +407,8 @@ namespace WpfApp1
             }
         } // ProcessPages
 
+
+
         /// <summary>
         /// Processes a PDF page and saves the output to the specified image file.
         /// </summary>
@@ -410,6 +438,8 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPdfPage", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // ProcessPdfPage
+
+
 
         /// <summary>
         /// Logs the results of the export process.
