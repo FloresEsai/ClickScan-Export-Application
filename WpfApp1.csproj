@@ -25,10 +25,8 @@
 
   <ItemGroup>
     <Reference Include="CMImaging">
-      <HintPath>..\..\Documents\ExtractCS - Esai GUI\CSLibrary\CMImaging.dll</HintPath>
+      <HintPath>CMImaging.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-
 
 </Project>
