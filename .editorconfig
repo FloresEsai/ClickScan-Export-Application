@@ -1,0 +1,13 @@
+﻿[*.cs]
+
+# CS8602: Dereference of a possibly null reference.
+dotnet_diagnostic.CS8602.severity = suggestion
+
+# CS0219: Variable is assigned but its value is never used
+dotnet_diagnostic.CS0219.severity = silent
+
+# CS8604: Possible null reference argument.
+dotnet_diagnostic.CS8604.severity = silent
+
+# CS8073: The result of the expression is always the same since a value of this type is never equal to 'null'
+dotnet_diagnostic.CS8073.severity = silent
