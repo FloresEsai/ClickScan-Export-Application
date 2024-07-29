@@ -39,7 +39,7 @@ namespace WpfApp1
             // Populate the datasources and drawers with available options from the current connection
             PopulateDatasourcesComboBox();
             PopulateDrawersComboBox();
-        }
+        } // MainWindow
 
         /// <summary>
         /// Closes Console when program is closed out
@@ -51,7 +51,7 @@ namespace WpfApp1
 
             // Free the console when the application is closed
             FreeConsole();
-        }
+        } // OnClosed
 
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
@@ -65,7 +65,7 @@ namespace WpfApp1
             {
                 DatasourcesComboBox.Items.Add(source);
             }
-        }
+        } // Populate Datasources ComboBox
 
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
@@ -79,7 +79,7 @@ namespace WpfApp1
             {
                 DrawersComboBox.Items.Add(drawer);
             }
-        }
+        } // Populate Drawers ComboBox
 
         /// <summary>
         /// Attempts to connect to the database using the provided data source.
@@ -97,7 +97,7 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+        } // Try Connect To Database
 
         /// <summary>
         /// Event handler for the datasources combo box selection change.
@@ -135,8 +135,7 @@ namespace WpfApp1
                     System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-        }
-
+        } // Set Active Data Source
 
         /// <summary>
         /// Event handler for the drawers combo box selection change.
@@ -165,8 +164,7 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Active drawer set to: {_dname}", "Drawer Set");
                 Console.WriteLine($"Active drawer set to: {_dname}");
             }
-        }
-
+        } // Set Active Drawer
 
         /// <summary>
         /// Event handler for the "Browse" button click.
@@ -177,7 +175,7 @@ namespace WpfApp1
             // Configure folder browser dialog box
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "Select a folder to export files to";
+                dialog.Description = "Set Export Destination";
                 dialog.ShowNewFolderButton = true;
 
                 // Show folder browser dialog box
@@ -194,7 +192,7 @@ namespace WpfApp1
                     Console.WriteLine("Debugging: " + _maindest + " is the current set export destination");
                 }
             }
-        }
+        } // Set Export Destination
 
         /// <summary>
         /// Event handler for the "Export" button click
@@ -235,7 +233,7 @@ namespace WpfApp1
                         {
                             totalFailed++;
                             totalRecords--;
-                            LogError("Error Retrieving Images [" + record.FolderID + "]");
+                            LogError("Error Retrieving Images [" + record.FolderID + "]", _maindest + "ErrorLog.txt");
                             continue;
                         }
 
@@ -250,7 +248,7 @@ namespace WpfApp1
             _conn.DBDisconnect();
 
             System.Windows.MessageBox.Show("Extraction Finished");
-        }
+        } // Export
 
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
@@ -273,19 +271,30 @@ namespace WpfApp1
                 FailedCounterText.Text = progress.failed.ToString();
                 TotalDocText.Text = progress.total.ToString();
             });
-        }
+        } // ReportProgress
 
-        /// <summary>
         /// Ensures that a directory exists, creates it if it does not.
+        /// Also checks if the directory creation was successful.
         /// </summary>
         /// <param name="path">The path of the directory to check or create.</param>
-        private static void EnsureDirectoryExists(string path)
+        /// <returns>True if the directory exists or was created successfully, false otherwise.</returns>
+        private static bool EnsureDirectoryExists(string path)
         {
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Failed to create directory: {e.Message}");
+                    return false;
+                }
             }
-        }
+
+            return Directory.Exists(path);
+        } // EnsureDirectoryExists
 
         /// <summary>
         /// Validates if the pages in a record are valid.
@@ -295,21 +304,21 @@ namespace WpfApp1
         private static bool IsValidPages(FolderRecord record)
         {
             return record.Pages != null && record.Pages.Count > 0;
-        }
+        } // IsValidPages
 
         /// <summary>
-        /// Logs an error message to the error log.
+        /// Logs an error message to the specified log file.
         /// </summary>
         /// <param name="message">The error message to log.</param>
-        /// TODO: COMBINE THIS METHOD WITH THE LOGEXPORTRESULTS METHOD
-        private void LogError(string message)
+        /// <param name="logFilePath">The path to the log file.</param>
+        private void LogError(string message, string logFilePath)
         {
-            using (StreamWriter logger = File.AppendText(_maindest + "error.log"))
+            using (StreamWriter logger = File.AppendText(logFilePath))
             {
                 logger.WriteLine(message);
                 logger.WriteLine("");
             }
-        }
+        } // LogError
 
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
@@ -343,7 +352,7 @@ namespace WpfApp1
                         {
                             Console.WriteLine($"A File has failed to be exported. Description(ID:ImageType:FileType:Location): {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
                             totalFailed++;
-                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}");
+                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", _maindest + "ErrorLog.txt");
                         }
                     }
                     else
@@ -361,7 +370,7 @@ namespace WpfApp1
                         else
                         {
                             Console.WriteLine($"Failed Export. Not of type 'ImageFile': {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
-                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}");
+                            LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", _maindest + "ErrorLog.txt");
                         }
                     }
 
@@ -373,7 +382,7 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPages : {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+        } // ProcessPages
 
         /// <summary>
         /// Processes a PDF page and saves the output to the specified image file.
@@ -393,6 +402,8 @@ namespace WpfApp1
                         {
                             tmpImg.Save(imgfile, _conn.EncoderInfo, _conn.ImgEncParams);
                             totalSuccess++;
+                            /// Debugging
+                            //Console.WriteLine("If this line is printed the pdf export was successful.");
                         }
                     }
                 }
@@ -401,7 +412,7 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPdfPage", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+        } // ProcessPdfPage
 
         /// <summary>
         /// Logs the results of the export process.
@@ -449,6 +460,6 @@ namespace WpfApp1
             {
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: LogExportResults", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+        } // logExportResults
     } // partial class scope
 } // namespace scope

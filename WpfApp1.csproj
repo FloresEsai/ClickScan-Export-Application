@@ -7,7 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
+    <ApplicationIcon>1_cbb_icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="1_cbb_icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Pdfium.Net.SDK" Version="4.91.2704" />
