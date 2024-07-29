@@ -43,6 +43,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Closes Console when program is closed out
         /// </summary>
@@ -53,6 +54,7 @@ namespace WpfApp1
             // Free the console when the application is closed
             FreeConsole();
         } // OnClosed
+
 
 
 
@@ -72,6 +74,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
         /// </summary>
@@ -85,6 +88,7 @@ namespace WpfApp1
                 DrawersComboBox.Items.Add(drawer);
             }
         } // Populate Drawers ComboBox
+
 
 
 
@@ -105,6 +109,7 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // Try Connect To Database
+
 
 
 
@@ -148,6 +153,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Event handler for the drawers combo box selection change.
         /// Sets the active drawer in the database connection.
@@ -179,6 +185,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Event handler for the "Browse" button click.
         /// Prompts the user to select an export path.
@@ -198,7 +205,7 @@ namespace WpfApp1
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     // Get the selected folder
-                    _maindest = dialog.SelectedPath;
+                    _maindest = Path.Combine(dialog.SelectedPath, "Images");
 
                     // Display the current selected path to the user
                     FilePathTextBox.Text = _maindest;
@@ -206,6 +213,7 @@ namespace WpfApp1
                 }
             }
         } // Set Export Destination
+
 
 
 
@@ -231,7 +239,7 @@ namespace WpfApp1
                 totalRecords = records.Count;
                 Console.WriteLine("Found " + records.Count + " records");
 
-                EnsureDirectoryExists(_maindest + "Images");
+                EnsureDirectoryExists(_maindest);
 
                 int pageseq = 1;
 
@@ -267,6 +275,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
         /// </summary>
@@ -289,6 +298,7 @@ namespace WpfApp1
                 TotalDocText.Text = progress.total.ToString();
             });
         } // ReportProgress
+
 
 
 
@@ -316,6 +326,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Validates if the pages in a record are valid.
         /// </summary>
@@ -324,6 +335,7 @@ namespace WpfApp1
         {
             return record.Pages != null && record.Pages.Count > 0;
         } // IsValidPages
+
 
 
 
@@ -343,6 +355,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
         /// </summary>
@@ -357,7 +370,7 @@ namespace WpfApp1
             {
                 foreach (CMImaging.Page recpage in record.Pages)
                 {
-                    string imgfile = _maindest + "Images\\" + pageseq.ToString("0000") + ".tif";
+                    string imgfile = _maindest + pageseq.ToString("0000") + ".tif";
 
                     if (recpage.FileType == FileType.ImageFile)
                     {
@@ -409,6 +422,7 @@ namespace WpfApp1
 
 
 
+
         /// <summary>
         /// Processes a PDF page and saves the output to the specified image file.
         /// </summary>
@@ -438,6 +452,7 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPdfPage", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // ProcessPdfPage
+
 
 
 
