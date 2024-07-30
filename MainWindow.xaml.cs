@@ -41,6 +41,9 @@ namespace WpfApp1
             PopulateDrawersComboBox();
         } // MainWindow
 
+
+
+
         /// <summary>
         /// Closes Console when program is closed out
         /// </summary>
@@ -50,7 +53,11 @@ namespace WpfApp1
 
             // Free the console when the application is closed
             FreeConsole();
+            _conn.DBDisconnect();
         } // OnClosed
+
+
+
 
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
@@ -66,6 +73,9 @@ namespace WpfApp1
             }
         } // Populate Datasources ComboBox
 
+
+
+
         /// <summary>
         ///  Ensure that the combo box is populated with the drawer options before any selection change event occurs
         /// </summary>
@@ -79,6 +89,9 @@ namespace WpfApp1
                 DrawersComboBox.Items.Add(drawer);
             }
         } // Populate Drawers ComboBox
+
+
+
 
         /// <summary>
         /// Attempts to connect to the database using the provided data source.
@@ -97,6 +110,9 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Connection to Data Source was unsuccessful: ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // Try Connect To Database
+
+
+
 
         /// <summary>
         /// Event handler for the datasources combo box selection change.
@@ -136,6 +152,9 @@ namespace WpfApp1
             }
         } // Set Active Data Source
 
+
+
+
         /// <summary>
         /// Event handler for the drawers combo box selection change.
         /// Sets the active drawer in the database connection.
@@ -164,6 +183,9 @@ namespace WpfApp1
                 Console.WriteLine($"Active drawer set to: {_dname}");
             }
         } // Set Active Drawer
+
+
+
 
         /// <summary>
         /// Event handler for the "Browse" button click.
@@ -198,6 +220,9 @@ namespace WpfApp1
                 }
             }
         } // Set Export Destination
+
+
+
 
         /// <summary>
         /// Event handler for the "Export" button click
@@ -250,10 +275,13 @@ namespace WpfApp1
                 }
                 LogExportResults(start, totalRecords, totalSuccess, totalFailed);
             }
-            _conn.DBDisconnect();
+            //_conn.DBDisconnect(); Moved this to onClosed to allow for multiple exports
 
             System.Windows.MessageBox.Show("Extraction Finished");
         } // Export
+
+
+
 
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
@@ -278,6 +306,9 @@ namespace WpfApp1
             });
         } // ReportProgress
 
+
+
+
         /// Ensures that a directory exists, creates it if it does not.
         /// Also checks if the directory creation was successful.
         /// </summary>
@@ -299,6 +330,9 @@ namespace WpfApp1
 
             return Directory.Exists(path);
         } // EnsureDirectoryExists
+
+
+
 
         /// <summary>
         /// Validates if the pages in a record are valid.
@@ -323,6 +357,9 @@ namespace WpfApp1
             }
         } // LogError
 
+
+
+
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
         /// </summary>
@@ -338,6 +375,13 @@ namespace WpfApp1
                 foreach (CMImaging.Page recpage in record.Pages)
                 {
                     string imgfile = Path.Combine(_maindest, "Images", pageseq.ToString("0000") + ".tif");
+
+                    // Check if file already exists
+                    while (File.Exists(imgfile))
+                    {
+                        pageseq++;
+                        imgfile = Path.Combine(_maindest, "Images", pageseq.ToString("0000") + ".tif");
+                    }
 
                     if (recpage.FileType == FileType.ImageFile)
                     {
@@ -388,6 +432,8 @@ namespace WpfApp1
         } // ProcessPages
 
 
+
+
         /// <summary>
         /// Processes a PDF page and saves the output to the specified image file.
         /// </summary>
@@ -398,6 +444,17 @@ namespace WpfApp1
         {
             try
             {
+                // Check if file already exists
+                while (File.Exists(imgfile))
+                {
+                    int index = imgfile.LastIndexOf('.');
+                    string baseName = imgfile.Substring(0, index);
+                    string extension = imgfile.Substring(index);
+                    int number = int.Parse(baseName.Substring(baseName.Length - 4));
+                    number++;
+                    imgfile = baseName + number.ToString("0000") + extension;
+                }
+
                 using (PdfiumViewer.PdfDocument pdfdoc = PdfiumViewer.PdfDocument.Load(recpage.FileLocation))
                 {
                     for (int p = 0; p < pdfdoc.PageCount; p++)
@@ -417,6 +474,9 @@ namespace WpfApp1
                 System.Windows.MessageBox.Show($"Error in File: MainWindow.xaml.cs : Method: ProcessPdfPage", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // ProcessPdfPage
+
+
+
 
         /// <summary>
         /// Logs the results of the export process.
