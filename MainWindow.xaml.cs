@@ -343,6 +343,9 @@ namespace WpfApp1
             return record.Pages != null && record.Pages.Count > 0;
         } // IsValidPages
 
+
+
+
         /// <summary>
         /// Logs an error message to the specified log file.
         /// </summary>
