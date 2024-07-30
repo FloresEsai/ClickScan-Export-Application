@@ -13,7 +13,7 @@
 1. Download ZIP
 2. Extract ZIP
 3. Build Solution in Visual Studio 2022
-3.1. Alternatively: download the installer or the exe (in progress) 
+4. Alternatively: download the installer or the exe (in progress) 
 
 ## License
 
