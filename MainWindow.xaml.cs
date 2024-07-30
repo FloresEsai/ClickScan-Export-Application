@@ -190,6 +190,7 @@ namespace WpfApp1
         /// <summary>
         /// Event handler for the "Browse" button click.
         /// Prompts the user to select an export path.
+        /// Sets the export path as _maindest
         /// </summary>
         private void EStart_Click(object sender, RoutedEventArgs e)
         {
@@ -227,6 +228,7 @@ namespace WpfApp1
         /// <summary>
         /// Event handler for the "Export" button click
         /// Initiates the exportation from \\_datasource\\_dname to \\_maindest
+        /// The program will create the \\_maindest\\Images folder in order to store the converted .tif files
         /// </summary>
         private void EXButton_Click(object sender, RoutedEventArgs e)
         {
@@ -285,6 +287,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Updates progress bar in MainWindow.xaml with each export executed
+        /// Reports progress to the user
         /// </summary>
         /// <param name="progress"> Encapsulates the int variables as one accessible variable </param>
         /// <param name="current"> Current number of records exported </param>
@@ -308,7 +311,7 @@ namespace WpfApp1
 
 
 
-
+        /// <summary>
         /// Ensures that a directory exists, creates it if it does not.
         /// Also checks if the directory creation was successful.
         /// </summary>
@@ -336,6 +339,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Validates if the pages in a record are valid.
+        /// Otherwise it will through an error message in the console and the window.
         /// </summary>
         /// <param name="record">The record to validate.</param>
         private static bool IsValidPages(FolderRecord record)
@@ -348,6 +352,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Logs an error message to the specified log file.
+        /// Appends the error message to the end of the log file.
         /// </summary>
         /// <param name="message">The error message to log.</param>
         /// <param name="logFilePath">The path to the log file.</param>
@@ -365,6 +370,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Processes the pages of a record and writes the output to the specified writer.
+        /// Takes each page, sends it to the export destination, and converting it into a .tif file.
         /// </summary>
         /// <param name="record">The record containing the pages.</param>
         /// <param name="writer">The StreamWriter to write the output to.</param>
@@ -440,6 +446,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Processes a PDF page and saves the output to the specified image file.
+        /// Takes each page, sends it to the export destination, and converting it into a .tif file.
         /// </summary>
         /// <param name="recpage">The page to process.</param>
         /// <param name="imgfile">The output image file path.</param>
@@ -484,6 +491,7 @@ namespace WpfApp1
 
         /// <summary>
         /// Logs the results of the export process in its own file alongside the image folder.
+        /// Logs the total number of records processed, the total number of successful exports, and the total number of failed exports.
         /// </summary>
         /// <param name="start">The start time of the export process.</param>
         /// <param name="totalRecords">The total number of records processed.</param>
