@@ -26,7 +26,7 @@ namespace WpfApp1
         {
             InitializeComponent();
 
-            // Attach console to the WPF application FOR DEBUGGING
+            // Attach console to the WPF application FOR TRACING
             AllocConsole();
 
             // Attempt to connect to the database if a data source is provided
@@ -45,7 +45,7 @@ namespace WpfApp1
 
 
         /// <summary>
-        /// Closes Console when program is closed out
+        /// Closes Console and the connection to the database when program is closed out
         /// </summary>
         protected override void OnClosed(EventArgs e)
         {
@@ -421,6 +421,7 @@ namespace WpfApp1
                         {
                             Console.WriteLine($"Failed Export. Not of type 'ImageFile': {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
                             LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", Path.Combine(_maindest, "ErrorLog.txt"));
+                            totalFailed++;
                         }
                     }
 
@@ -482,7 +483,7 @@ namespace WpfApp1
 
 
         /// <summary>
-        /// Logs the results of the export process.
+        /// Logs the results of the export process in its own file alongside the image folder.
         /// </summary>
         /// <param name="start">The start time of the export process.</param>
         /// <param name="totalRecords">The total number of records processed.</param>
