@@ -135,11 +135,11 @@ namespace WpfApp1
             // Handle the selection change event
             if (DatasourcesComboBox.SelectedItem is DataSource selectedDatasource)
             {
-                Console.WriteLine($"If this prints we have entered the if statement");
+                //Debugging: Console.WriteLine($"If this prints we have entered the if statement");
                 // Set the current data source if it is not null
                 if (_datasource != null)
                 {
-                    Console.WriteLine($"If this prints we have entered the second if statement");
+                    //Debugging: Console.WriteLine($"If this prints we have entered the second if statement");
                     try
                     {
                         // Initialize and connect the datab ase connection
@@ -158,14 +158,14 @@ namespace WpfApp1
                 }
                 else
                 {
-                    Console.WriteLine($"If this prints we have entered the else statement");
+                    //Debugging: Console.WriteLine($"If this prints we have entered the else statement");
                     // Show error message if _datasource is null
                     System.Windows.MessageBox.Show($"No data source selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else { Console.WriteLine($"We're failing to get into the if statement"); }
+            //Debugging: else { Console.WriteLine($"We're failing to get into the if statement"); }
         } // Set Active Data Source
- 
+
 
 
 
