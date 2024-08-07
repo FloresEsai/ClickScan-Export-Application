@@ -615,6 +615,7 @@ namespace WpfApp1
                             // Log error for invalid image or format type
                             Console.WriteLine($"Failed Export. Not of type 'ImageFile': {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation}");
                             LogError($"Invalid Image or Format Type {{ {record.FolderID} : {recpage.ImageType} : {recpage.FileType} : {recpage.FileLocation} }}", Path.Combine(_maindest, "ErrorLog.txt"));
+                            totalFailed++;
                         }
                     }
 
@@ -660,9 +661,16 @@ namespace WpfApp1
                     {
                         using (var tmpImg = pdfdoc.Render(p, (int)(pdfdoc.PageSizes[p].Width / 0.24f), (int)(pdfdoc.PageSizes[p].Height / 0.24f), 600, 600, false))
                         {
-                            // Save the image file
-                            tmpImg.Save(imgfile, _conn.EncoderInfo, _conn.ImgEncParams);
-                            totalSuccess++;
+                            try
+                            {
+                                // Save the image file
+                                tmpImg.Save(imgfile, _conn.EncoderInfo, _conn.ImgEncParams);
+                                totalSuccess++;
+                            }
+                            catch (Exception)
+                            {
+                                totalFailed++;
+                            }
                         }
                     }
                 }
